@@ -1,0 +1,216 @@
+﻿using Common;
+using Server;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+
+namespace Client
+{
+    public class Metode : IMetode
+    {
+        public Serverr server { get; set; }
+        public IConsole console { get; set; }
+
+        public Metode(Serverr server, IConsole console)
+        {
+            this.server = server;
+            this.console = console;
+        }
+
+        public Clientt Subscribe(IPomocne_funkcijeSubscribe pf, string trenutan_lobby, int id, Model m, string imeK, bool resubscribe)
+        {
+
+            
+            Clientt c1 = server.cf.ClientCreateNew(imeK);
+            if(resubscribe)
+            {
+                c1.Model = m;
+                c1.Naziv_trenutnog_lobbyja = trenutan_lobby;
+                foreach(Clientt client in server.klijenti.Values)
+                {
+                    if(client.Naziv_trenutnog_lobbyja == c1.Naziv_trenutnog_lobbyja)
+                    {
+                        client.Model.Clients.RemoveAll(p => p.Naziv_klijenta == c1.Naziv_klijenta);
+                        c1.Model.Clients.RemoveAll(p => p.Naziv_klijenta == client.Naziv_klijenta);
+                    }
+                }
+            }
+
+            c1.Trenutan_lobby = pf.Izaberi(server.lista_klijentskih_redova, trenutan_lobby);
+            if(c1.Trenutan_lobby == null)
+            {
+                console.WriteLine("Pogresan izbor");
+                return null;
+            }
+            else
+            {
+                c1.Naziv_trenutnog_lobbyja = c1.Trenutan_lobby.Item1.Item1.TrimEnd('A');
+
+            }
+
+
+
+            string asdf = (pf.SaveToXml<Model>(m));
+            pf.Enqueue(server.Serverski_redovi.Item1, asdf);
+
+            c1.Model = pf.ReadFromXml<Model>((string)pf.Dequeue(server.Serverski_redovi.Item1));
+            c1.ModelId = c1.Model.Id;
+            c1.Id = id;
+
+            foreach (Clientt client in server.klijenti.Values)
+            {
+                if(client.Naziv_trenutnog_lobbyja == c1.Naziv_trenutnog_lobbyja && client.Naziv_klijenta != c1.Naziv_klijenta && !c1.Model.Clients.Contains(client))
+                {
+                    client.Model.Clients.Add(c1);
+                    c1.Model.Clients.Add(client);
+                }
+            }
+
+            pf.Enqueue(server.Serverski_redovi.Item2, ("Client: " + c1.Naziv_klijenta + " se uspesno subscribovao na red: " + c1.Trenutan_lobby.Item1.Item1.TrimEnd('A')));
+
+            console.WriteLine(pf.Dequeue(server.Serverski_redovi.Item2).ToString());
+
+            server.klijenti[c1.Naziv_klijenta] = c1;
+
+            return c1;
+        }
+
+        public bool Create(IPomocne_funkcijeCreate pf, Clientt c)
+        {
+
+            console.WriteLine("Unesi ime reda");
+            string str = console.ReadLine();
+
+            if (!pf.Jedinstvenost(str, server.lista_klijentskih_redova))
+            {
+                // stavi u nov
+
+                c.Trenutan_lobby = pf.CreateClientQueues(str);
+                c.Naziv_trenutnog_lobbyja = c.Trenutan_lobby.Item1.Item1.Trim('A');
+                console.WriteLine("Uspesno kreiran redovi na klijentskoj strani: " + c.Trenutan_lobby.Item1.Item1 + " & " + c.Trenutan_lobby.Item2.Item1);
+                server.lista_klijentskih_redova.Add(str, c.Trenutan_lobby);
+
+                pf.Enqueue(server.Serverski_redovi.Item1, "\nClient: " + c.Naziv_klijenta + " sent: Create Queue (" + str + ")");
+
+                server.Klijentski_redovi_na_serveru = pf.CreateServerQueuePair(server.Serverski_redovi.Item1, server.Serverski_redovi.Item2);
+
+                console.WriteLine(pf.Dequeue(server.Serverski_redovi.Item2).ToString());
+
+                server.lista_serverskih_redova.Add(str, server.Klijentski_redovi_na_serveru);
+
+
+                return true;
+
+            }
+            else
+            {
+                console.WriteLine("Uneo si vec postojeci lobby.");
+                return false;
+            }
+        }
+
+        public bool Update(IPomocne_funkcijeUpdate pfu, Clientt c)
+        {
+            while (true)
+            {
+                console.WriteLine("\n\n1.Izmeni Item\n2.Dodaj nov Item");
+                var key = console.ReadKey().Key;
+                if (key == ConsoleKey.D1 || key == ConsoleKey.NumPad1)
+                {
+                    foreach (Item i in c.Model.Items)
+                    {
+                        Console.WriteLine(i.Naziv);
+                    }
+
+                    foreach(Item i in c.Model.Items)
+                    {
+                        if(i.Naziv == Console.ReadLine())
+                        {
+                            console.WriteLine("Unesi nov naziv: ");
+                            i.Naziv = console.ReadLine();
+                            console.WriteLine("Unesi novu kolicinu: ");
+                            i.Kolicina = Int32.Parse(console.ReadLine());
+                            console.WriteLine("Unesi da li je aktiviran ili nije: Y/N");
+                            if(console.ReadKey().Key == ConsoleKey.Y)
+                            {
+                                i.Aktiviran = true;
+                            }
+                            else if(console.ReadKey().Key == ConsoleKey.N)
+                            {
+                                i.Aktiviran = false;
+                            }
+                            console.WriteLine("Unesi moc: ");
+                            i.Razorna_moc = Int32.Parse(console.ReadLine());
+                            server.repository.Clients.Attach(c);
+                            server.repository.SaveChanges();
+
+                        }
+
+                        else
+                        {
+                            console.WriteLine("Ne postoji taj item!");
+                        }
+                    }
+
+
+                }
+                else if(key == ConsoleKey.D2 || key == ConsoleKey.NumPad2)
+                {
+                    Item i = new Item();
+                    console.WriteLine("Unesi naziv: ");
+                    i.Naziv = console.ReadLine();
+                    console.WriteLine("Unesi kolicinu: ");
+                    i.Kolicina = Int32.Parse(console.ReadLine());
+                    console.WriteLine("Unesi da li je aktiviran ili nije: Y/N");
+                    if (console.ReadKey().Key == ConsoleKey.Y)
+                    {
+                        i.Aktiviran = true;
+                    }
+                    else if (console.ReadKey().Key == ConsoleKey.N)
+                    {
+                        i.Aktiviran = false;
+                    }
+                    console.WriteLine("Unesi moc: ");
+                    i.Razorna_moc = Int32.Parse(console.ReadLine());
+                    c.Model.Items.Add(i);
+                    server.repository.Clients.Attach(c);
+                    server.repository.SaveChanges();
+                }
+                else
+                {
+
+                }
+                break;
+            }
+
+            return true;
+        }
+
+        public void ShowClientData(Clientt c)
+        {
+            foreach(Item i in c.Model.Items)
+            {
+                console.WriteLine(i.ToString());
+            }
+
+            foreach(Position p in c.Model.Positions)
+            {
+                console.WriteLine(p.ToString());
+            }
+
+            foreach(Clientt client in c.Model.Clients)
+            {
+                console.WriteLine(client.Naziv_klijenta);
+            }
+        }
+
+        public void ShowOtherClientsData(List<Clientt> klijenti)
+        {
+            //To be continued...
+        }
+    }
+}

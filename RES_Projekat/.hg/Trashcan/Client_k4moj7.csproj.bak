@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F63936CE-94E9-4C3E-B1E9-2FE6CD84AB53}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Client</RootNamespace>
+    <AssemblyName>Client</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Client.cs" />
+    <Compile Include="ClientFactory.cs" />
+    <Compile Include="ConsoleWrapper.cs" />
+    <Compile Include="IClient.cs" />
+    <Compile Include="IConsole.cs" />
+    <Compile Include="IMeni.cs" />
+    <Compile Include="IItem.cs" />
+    <Compile Include="IMetode.cs" />
+    <Compile Include="Meni.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="Metode.cs" />
+    <Compile Include="Migrations\201906041923072_InitialModel.cs" />
+    <Compile Include="Migrations\201906041923072_InitialModel.Designer.cs">
+      <DependentUpon>201906041923072_InitialModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906042153570_AddedForeignKeysToItemsandPositions.cs" />
+    <Compile Include="Migrations\201906042153570_AddedForeignKeysToItemsandPositions.Designer.cs">
+      <DependentUpon>201906042153570_AddedForeignKeysToItemsandPositions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906042207420_migracija.cs" />
+    <Compile Include="Migrations\201906042207420_migracija.Designer.cs">
+      <DependentUpon>201906042207420_migracija.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906081429591_DodatNazivLobbyja.cs" />
+    <Compile Include="Migrations\201906081429591_DodatNazivLobbyja.Designer.cs">
+      <DependentUpon>201906081429591_DodatNazivLobbyja.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906081738079_NotMappedClients.cs" />
+    <Compile Include="Migrations\201906081738079_NotMappedClients.Designer.cs">
+      <DependentUpon>201906081738079_NotMappedClients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="ModelFactory.cs" />
+    <Compile Include="Position.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository.cs" />
+    <Compile Include="Server.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{1642196d-9147-428c-a53d-ab0acaaf7d9e}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201906041923072_InitialModel.resx">
+      <DependentUpon>201906041923072_InitialModel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906042153570_AddedForeignKeysToItemsandPositions.resx">
+      <DependentUpon>201906042153570_AddedForeignKeysToItemsandPositions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906042207420_migracija.resx">
+      <DependentUpon>201906042207420_migracija.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906081429591_DodatNazivLobbyja.resx">
+      <DependentUpon>201906081429591_DodatNazivLobbyja.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906081738079_NotMappedClients.resx">
+      <DependentUpon>201906081738079_NotMappedClients.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

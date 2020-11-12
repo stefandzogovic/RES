@@ -1,0 +1,21 @@
+﻿using Client.Pomocne_funkcijeUpdate;
+using Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Client
+{
+    public interface IMetode
+    {
+        Clientt Subscribe(IPomocne_funkcijeSubscribe pfs, string trenutan_lobby, int id, Model m, string imeK, bool bul);
+        bool Create(IPomocne_funkcijeCreate pfc, Clientt c);
+        bool Update(IPomocne_funkcijeUpdate pfu, Clientt c);
+       
+        void ShowClientData(Clientt c);
+        void ShowOtherClientsData(List<Clientt> klijenti);
+
+    }
+}

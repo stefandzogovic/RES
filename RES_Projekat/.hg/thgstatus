@@ -1,0 +1,12 @@
+m
+m.vs/RES_Projekat/v15
+m.vs/RES_Projekat/v15/Server/sqlite3
+mClient
+mClient/Migrations
+mClient/bin/Debug
+mClient/obj/Debug
+mCommon/bin/Debug
+mCommon/obj/Debug
+rTests
+mTests/bin/Debug
+mTests/obj/Debug

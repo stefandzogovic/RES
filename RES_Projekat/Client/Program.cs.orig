@@ -1,0 +1,38 @@
+﻿using Common;
+using Server;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Client
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Repository repo = new Repository("myConnectionString");
+            repo.Database.CreateIfNotExists();
+            ConsoleWrapper cw = new ConsoleWrapper();
+            QueueFactory qf = new QueueFactory();
+            MyTupleFactory mtf = new MyTupleFactory();
+            ClientFactory cf = new ClientFactory();
+            Pomocne_funkcijeSubscribe pfs = new Pomocne_funkcijeSubscribe(mtf, qf);
+            Pomocne_funkcijeCreate pfc = new Pomocne_funkcijeCreate(mtf, qf);
+            Serverr server = new Serverr(cf, repo);
+            Metode metode = new Metode(server, cw);
+            Meni meni = new Meni(pfc, pfs);
+            Model m = new Model();
+            Clientt c = new Clientt();
+
+
+            server.IscitajIzBazeNaPocetku();
+
+
+            meni.Menu(cw, metode);
+        }
+
+    }
+}

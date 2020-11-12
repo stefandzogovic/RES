@@ -1,0 +1,5 @@
+Kao klijent zelim da imam mogucnost promene svojih podataka.
+Kao klijent zelim da se registrujem na vec postojeci lobby kako bih imao prikaz podataka ostalih registrovanih klijenata na tom lobby-ju.
+Kao registrovani klijent zelim da postoji feedback 
+Kao administrator zelim da uprlavjam bazu podataka kako bih 
+Kao klijent zelim da imam mogucnost kreiranje svog lobby kako bi drugi klijenti mogli da se registruju na moj lobby.
